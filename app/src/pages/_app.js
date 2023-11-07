@@ -1,6 +1,7 @@
 // Exemplo em uma página, como src/pages/index.js
 
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import Sidebar from '@/components/sidebar';
 import styles from '@/styles/globals.css'
 
@@ -23,12 +24,18 @@ function HomePage() {
     }, []);
 
     return (
+        <>
+        <Head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" 
+        />
+      </Head>
         <div >
             <div>
             <Sidebar isOpen={isSidebarOpen} />
             </div>
             {/* Resto do conteúdo da página */}
         </div>
+        </>
     );
 }
 

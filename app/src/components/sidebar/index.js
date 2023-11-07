@@ -13,10 +13,10 @@ function Sidebar() {
   return (
     <div className={`${styles.sidebar} ${!isOpen ? styles.closed : ''}`} onClick={toggleSidebar}>
       <img className='logo'src="/logo.jpg" alt="Logo" />
-      <a href="/"><i className="icon-home"></i><span className={styles.text}>Home</span></a>
-      <a href="/financial"><i className="icon-service"><img src='/pasta-financeiro.svg'></img></i><span className={styles.text}>Financeiro</span></a>
-      <a href="#services"><i className="icon-service"></i><span className={styles.text}>Serviços</span></a>
-      <a href="#contact"><i className="icon-contact"></i><span className={styles.text}>Pessoas</span></a>
+      <a href="/"><i className="fa fa-fw fa-home"></i><span className={styles.text}>Home</span></a>
+      <a href="/financial"><i className="fa fa-fw fa-folder"></i><span className={styles.text}>Financeiro</span></a>
+      <a href="/services"><i className="fa fa-fw fa-gear"></i><span className={styles.text}>Serviços</span></a>
+      <a href="#contact"><i className="fa fa-fw fa-user"></i><span className={styles.text}>Pessoas</span></a>
       
     </div>
   );
