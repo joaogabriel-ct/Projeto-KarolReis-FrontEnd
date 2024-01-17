@@ -25,16 +25,12 @@ function HomePage({ Component, pageProps }) {
     }, []);
 
     return (
-        <>
-        <Head>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
-            {/* Outros elementos de Head que você deseja incluir */}
-        </Head>
-        <Sidebar />
-        <main>
-            <Component {...pageProps} />
-        </main>
-    </>
+    <div className="flex">
+            <Sidebar />
+        <div className="flex-grow">
+                <Component {...pageProps} />
+        </div>
+    </div>
     );
 }
 
