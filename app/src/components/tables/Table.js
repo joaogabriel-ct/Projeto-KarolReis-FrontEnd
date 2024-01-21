@@ -1,19 +1,30 @@
 export default function Table({data}) {
+    function formatDate(isoString) {
+        const date = new Date(isoString);
+        return date.toLocaleDateString("pt-BR", {
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+          
+        });
+      }
+
+
     return(
-        <div class="relative overflow-x-auto shadow-md ">
-            <table class="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-800">
-                <thead class="text-xs  uppercase  bg-custom-pink dark:text-gray-900">
+        <div className="relative overflow-x-auto shadow-md ">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-800">
+                <thead className="text-xs  uppercase  bg-custom-pink dark:text-gray-900">
                     <tr>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Nome cliente
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Procedimento
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Preço
                         </th>
-                        <th scope="col" class="px-6 py-3">
+                        <th scope="col" className="px-6 py-3">
                             Ultima visita
                         </th>
                         <th scope="col" class="px-6 py-3">
@@ -35,7 +46,7 @@ export default function Table({data}) {
                                     R$ {data.PROCEDURE.value.toFixed(2)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                    {data.date}
+                                    {formatDate(data.date)}
                                 </td>
                                 <td className="px-6 py-4 dark:text-grey-600">
                                     <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
