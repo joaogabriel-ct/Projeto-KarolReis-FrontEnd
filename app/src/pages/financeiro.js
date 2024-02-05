@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import ValueTotal from "@/components/valueTotal";
 
-const DynamicCharts = dynamic(() => import("@/components/charts"))
+const DynamicCharts = dynamic(() => import("@/components/charts/charts"))
 
 export default function Financeiro() {
     const [data, setData] = useState([])

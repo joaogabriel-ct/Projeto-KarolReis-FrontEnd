@@ -1,5 +1,3 @@
-// Exemplo em uma página, como src/pages/index.js
-
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Sidebar from '@/components/sidebar';

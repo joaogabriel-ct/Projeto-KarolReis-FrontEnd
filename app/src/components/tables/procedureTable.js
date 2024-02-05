@@ -1,53 +1,36 @@
-export default function Table({ data }) {
-    function formatDate(isoString) {
-        const date = new Date(isoString);
-        return date.toLocaleDateString("pt-BR", {
-            year: 'numeric',
-            month: 'numeric',
-            day: 'numeric',
-
-        });
-    }
-
-
+export default function ProcedureTable({ data }) {
     return (
-        <div className="relative overflow-x-auto shadow-md ">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-800 dark:text-gray-800">
-                <thead className="text-xs  uppercase  bg-custom-pink dark:text-gray-900">
+        <div className="relative overflow-x-auto shadow-md sm:rounded-lg" style={{ fontSize: '0.75rem' }}>
+            <table className="w-full text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                     <tr>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-4 py-2">
                             Nome do Procedimento
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-4 py-2">
                             Preço
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-4 py-2">
                             Observação
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-
-                    {Object.keys(data).length > 0 && (
-                        <tr key={data.id} className="odd:bg-white odd:dark:bg-gray-50 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                            <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-grey-600">
-                                {data.LEAD.name}
+                    {data.map((procedure) => (
+                        <tr key={procedure.id} className="even:bg-gray-50 odd:bg-white border-b dark:border-gray-700">
+                            <td className="px-4 py-2 max-w-[200px] truncate">
+                                {procedure.name}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                {data.PROCEDURE.name}
+                            <td className="py-2">
+                                R$ {procedure.value.toFixed(2)}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                R$ {data.PROCEDURE.value.toFixed(2)}
-                            </td>
-                            <td className="px-6 py-4 dark:text-grey-600">
-                                <a href="#" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+                            <td className="px-4 py-2 max-w-[300px] truncate">
+                                {procedure.observation || 'N/A'}
                             </td>
                         </tr>
-                    )}
+                    ))}
                 </tbody>
             </table>
         </div>
     );
 }
-
-
