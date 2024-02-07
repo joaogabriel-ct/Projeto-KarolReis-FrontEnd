@@ -9,7 +9,7 @@ const GraficoProcedimentosMaisVendidos = () => {
     useEffect(() => {
         axios.get('http://localhost:8000/api/v1/dados-procedimentos/')
             .then(response => {
-                setDados(response.data.map(item => ({ nome: item.procedure__name, vendas: item.total_vendas })));
+                setDados(response.data.map(item => ({ nome: item.procedure_id__name, vendas: item.total_vendas })));
             })
             .catch(error => {
                 console.error('Houve um erro ao buscar os dados dos procedimentos mais vendidos:', error);

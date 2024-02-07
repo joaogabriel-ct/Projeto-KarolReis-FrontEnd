@@ -11,7 +11,7 @@ export default function Financeiro() {
     const [data, setData] = useState([])
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/v1/sales/1/')
+        axios.get('http://localhost:8000/api/v1/sales/')
             .then(response => {
                 setData(response.data);
             })

@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 function VisitsPage() {
     const router = useRouter();
     const [clientInfo, setClientInfo] = useState(null);
+    const [remarcacoes, setRemarcoes] = useState('')
     const [visitsData, setVisitsData] = useState([]);
     const [error, setError] = useState(null);
     const { id } = router.query;
@@ -19,6 +20,8 @@ function VisitsPage() {
                     if(response.data.detalhes_visitas.length > 0){
                         // Assume que todos os registros possuem os mesmos dados do cliente
                         const clientData = response.data.detalhes_visitas[0].LEAD;
+                        const remarcacoes = response.data.total_remarcacoes
+                        setRemarcoes(remarcacoes)
                         setClientInfo(clientData);
                     }
                     setVisitsData(response.data.detalhes_visitas);
@@ -48,6 +51,7 @@ function VisitsPage() {
                     <p><strong>Telefone:</strong> {clientInfo.phone_number}</p>
                     <p><strong>Instagram:</strong> @{clientInfo.instagram}</p>
                     <p><strong>Aniversário:</strong> {new Date(clientInfo.birthday).toLocaleDateString()}</p>
+                    <p><strong>Remarcações:</strong> {remarcacoes}</p>
                 </div>
             ) : <p>Carregando informações do cliente...</p>}
 
