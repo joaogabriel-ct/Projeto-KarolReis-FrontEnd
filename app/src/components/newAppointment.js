@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, MenuItem } from '@mui/material';
+import { Dialog, DialogActions, DialogContent, DialogTitle, TextField, Button, MenuItem, Select, TextareaAutosize } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import InputMask from 'react-input-mask';
 import * as Yup from 'yup';
@@ -244,6 +244,8 @@ const NewAppointment = ({ open, setOpen }) => {
     );
 };
 const NewLeadDialog = ({ open, onClose, initialCpf }) => {
+    const [doenca, setDoenca] = useState('Não')
+
     const [formValues, setFormValues] = useState({
         cpf: '',
         name: '',
@@ -273,7 +275,7 @@ const NewLeadDialog = ({ open, onClose, initialCpf }) => {
         // Adapte para converter dados adicionais conforme necessário
         const leadData = {
             ...formValues,
-            doenca: formValues.doenca ? JSON.parse(formValues.doenca) : {},
+            doenca: doenca === 'Sim' ? JSON.parse(formValues.doenca) : {},
         };
 
         try {
@@ -308,9 +310,13 @@ const NewLeadDialog = ({ open, onClose, initialCpf }) => {
             // Aqui você pode adicionar uma notificação ao usuário sobre o erro
         }
     };
+
+    const handleChangeDoenca = (e) => {
+        setDoenca(e.target.value)
+    }
     return (
         <Dialog open={open} onClose={onClose}>
-            <DialogTitle>Cadastrar Novo Lead</DialogTitle>
+            <DialogTitle>Cadastrar cliente</DialogTitle>
             <DialogContent>
                 <TextField
                     autoFocus
@@ -391,7 +397,32 @@ const NewLeadDialog = ({ open, onClose, initialCpf }) => {
                     value={formValues.adress}
                     onChange={handleChange}
                 />
-                {/* Adicione outros campos conforme necessário */}
+                <Select
+                    fullWidth
+                    variant="outlined"
+                    labelId='doenca-select'
+                    label='Doença'
+                    value={doenca}
+                    onChange={handleChangeDoenca}
+                >
+                    <MenuItem value={'Sim'}>Sim</MenuItem>
+                    <MenuItem value={'Não'}>Não</MenuItem>
+                </Select>
+                {doenca === 'Sim' && (
+                    <TextareaAutosize
+                        minRows={3}
+                        maxRows={6}
+                        cols={70}
+                        placeholder="Descreva a doença"
+                        fullWidth
+                        variant="outlined"
+                        label='Qual?'
+                        name="other_doenca"
+                        value={formValues.other_doenca}
+                        onChange={handleChange}
+                    />
+                )}
+
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose}>Cancelar</Button>
