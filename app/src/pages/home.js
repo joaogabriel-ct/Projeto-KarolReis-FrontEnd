@@ -8,7 +8,7 @@ export default function Home() {
     setOpenDialog(true);
   };
     return (
-    <div className="flex h-screen">
+    <div className="flex justify-center items-center">
         <App />
     </div>
   );
