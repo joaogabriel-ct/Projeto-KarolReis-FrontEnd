@@ -12,12 +12,12 @@ function VisitsPage() {
     const [error, setError] = useState(null);
     const { id } = router.query;
     useEffect(() => {
-        
+
         if (id) {
-            
+
             axios.get(`http://localhost:8000/api/v1/visitas-total/${id}/`)
                 .then((response) => {
-                    if(response.data.detalhes_visitas.length > 0){
+                    if (response.data.detalhes_visitas.length > 0) {
                         // Assume que todos os registros possuem os mesmos dados do cliente
                         const clientData = response.data.detalhes_visitas[0].LEAD;
                         const remarcacoes = response.data.total_remarcacoes
@@ -25,11 +25,11 @@ function VisitsPage() {
                         setClientInfo(clientData);
                     }
                     setVisitsData(response.data.detalhes_visitas);
-                    
+
                 })
                 .catch((error) => {
                     setError(error);
-                    
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Erro!',
@@ -39,19 +39,22 @@ function VisitsPage() {
         }
     }, [id]);
 
-    
+
     if (error) return <p>Erro ao carregar os dados das visitas.</p>;
 
     return (
         <div className="container mx-auto p-6">
-            <h1 className="text-2xl font-semibold mb-4">Perfil do Cliente</h1>
+
+            <h1 className="justify-center items-center text-2xl font-semibold mb-4">Perfil do {clientInfo.name}</h1>
             {clientInfo ? (
-                <div className="bg-white p-4 rounded-lg shadow-lg mb-6">
-                    <h3 className="text-lg font-semibold mb-2">{clientInfo.name}</h3>
-                    <p><strong>Telefone:</strong> {clientInfo.phone_number}</p>
-                    <p><strong>Instagram:</strong> @{clientInfo.instagram}</p>
-                    <p><strong>Aniversário:</strong> {new Date(clientInfo.birthday).toLocaleDateString()}</p>
-                    <p><strong>Remarcações:</strong> {remarcacoes}</p>
+                <div className='p-8 justify-center items-center'>
+                    <div className="flex bg-white justify-center items-center rounded-lg mb-6">
+                        <p className='p-4'><strong>Remarcações:</strong> {remarcacoes}</p>
+                        <p className='p-4'><strong>Telefone:</strong> {clientInfo.phone_number}</p>
+                        <p className='p-4'><strong>Instagram:</strong> @{clientInfo.instagram}</p>
+                        <p className='p-4'><strong>Aniversário:</strong> {new Date(clientInfo.birthday).toLocaleDateString()}</p>
+
+                    </div>
                 </div>
             ) : <p>Carregando informações do cliente...</p>}
 

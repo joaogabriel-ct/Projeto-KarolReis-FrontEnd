@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
-import { DateField } from '@mui/x-date-pickers/DateField';
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, FormControl, InputLabel, Select, MenuItem, Typography } from '@mui/material';
 import * as yup from 'yup';
 import InputMask from 'react-input-mask';
+
 import { format, parseISO } from 'date-fns';
 import { Form, Formik, Field } from "formik";
 
@@ -114,27 +114,50 @@ export const AppointmentDetailsModal = ({ appointment, onClose }) => {
                                     value={appointment.PROCEDURE.value}
                                 ></TextField>
                                 <Select
+                                    className="w-full"
                                     value={acao}
                                     onChange={(e) => setAcao(e.target.value)}
-                                    className="px-4 py-2 border rounded"
+                                    margin="dense"
+                                    label='Remarcações'
 
                                 >
+                                    <InputLabel className="p-2">Remarcações</InputLabel>
                                     <MenuItem value={'venda'}>Concluir Venda</MenuItem>
                                     <MenuItem value={'remarcar'}>Remarcar</MenuItem>
                                 </Select>
                                 {acao === 'remarcar' && (
                                     <>
-                                    <TextField
-                                        margin="dense"
-                                        label="Date do Reagendamento"
-                                        type="date"
-                                        fullWidth
-                                        value={novaData}
-                                        onChange={(e) => setNovaData(e.target.value)}
-                                    >
-                                    </TextField>
-                                    <DateField label="Basic date field"/>
+                                        <Typography variant="subtitle1">Remarcar o atendimento:</Typography>
+                                        <div className="flex">
+
+                                            <TextField
+                                                className="p-2 w-1/2"
+                                                margin="dense"
+                                                label="Date do Reagendamento"
+                                                type="date"
+                                                value={novaData}
+                                                onChange={(e) => setNovaData(e.target.value)}
+                                            >
+                                            </TextField>
+                                            <TextField
+                                                className="p-2 w-1/2"
+                                                margin="dense"
+                                                label="Horario do Reagendamento"
+                                                type="time"
+                                                value={novaData}
+                                                onChange={(e) => setNovaData(e.target.value)}
+                                            >
+                                            </TextField>
+
+                                        </div>
                                     </>
+                                )}
+                                {acao === 'venda' && (
+                                    <>
+                                        <Typography variant="subtitle1">Finalizar o atendimento:</Typography>
+
+                                    </>
+
                                 )}
 
                             </DialogContent>
