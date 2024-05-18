@@ -1,7 +1,10 @@
 import App from '@/components/calendar';
 import NewAppointment from '@/components/newAppointment';
+import { withSessionHOC } from '@/service/auth/session';
 import { useState } from 'react';
-export default function Home() {
+
+
+function Home() {
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleOpenDialog = () => {
@@ -13,3 +16,5 @@ export default function Home() {
     </div>
   );
 }
+
+export default withSessionHOC(Home);

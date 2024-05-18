@@ -4,14 +4,18 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import ValueTotal from "@/components/valueTotal";
+import { withSession, withSessionHOC } from "@/service/auth/session";
+import { api } from "@/service/api";
 
 const DynamicCharts = dynamic(() => import("@/components/charts/charts"))
 
-export default function Financeiro() {
+function Financeiro() {
     const [data, setData] = useState([])
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/v1/sales/')
+        api.get('http://127.0.0.1:8000/api/v1/sales/',{
+
+        })
             .then(response => {
                 setData(response.data);
             })
@@ -50,3 +54,19 @@ export default function Financeiro() {
         </div>
     );
 }
+
+export default Financeiro;
+export const getServerSideProps = withSession(async (ctx) => {
+    const session = ctx.req.session;
+  
+    if (!session) {
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+      };
+    }
+  
+    return { props: { session } };
+  });

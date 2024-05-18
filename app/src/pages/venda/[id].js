@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import { api } from '@/service/api';
+import { withSessionHOC } from '@/service/auth/session';
 
 
 function VisitsPage() {
@@ -15,7 +16,7 @@ function VisitsPage() {
 
         if (id) {
 
-            axios.get(`http://localhost:8000/api/v1/visitas-total/${id}/`)
+            api.get(`http://localhost:8000/api/v1/visitas-total/${id}/`)
                 .then((response) => {
                     if (response.data.detalhes_visitas.length > 0) {
                         // Assume que todos os registros possuem os mesmos dados do cliente
@@ -45,20 +46,21 @@ function VisitsPage() {
     return (
         <div className="container mx-auto p-6">
 
-            <h1 className="justify-center items-center text-2xl font-semibold mb-4">Perfil do {clientInfo.name}</h1>
+            
             {clientInfo ? (
-                <div className='p-8 justify-center items-center'>
-                    <div className="flex bg-white justify-center items-center rounded-lg mb-6">
+                <div className='p-8 bg-white justify-center items-center'>
+                    <h1 className="flex  justify-center items-center text-2xl font-semibold mb-4">{clientInfo?.name}</h1>
+                    <div className="flex  justify-center items-center rounded-lg mb-6">
                         <p className='p-4'><strong>Remarcações:</strong> {remarcacoes}</p>
-                        <p className='p-4'><strong>Telefone:</strong> {clientInfo.phone_number}</p>
-                        <p className='p-4'><strong>Instagram:</strong> @{clientInfo.instagram}</p>
-                        <p className='p-4'><strong>Aniversário:</strong> {new Date(clientInfo.birthday).toLocaleDateString()}</p>
+                        <p className='p-4'><strong>Telefone:</strong> {clientInfo?.phone_number}</p>
+                        <p className='p-4'><strong>Instagram:</strong> @{clientInfo?.instagram}</p>
+                        <p className='p-4'><strong>Aniversário:</strong> {new Date(clientInfo?.birthday).toLocaleDateString()}</p>
 
                     </div>
                 </div>
             ) : <p>Carregando informações do cliente...</p>}
 
-            <h2 className="text-2xl font-semibold mb-4">Detalhes das Visitas</h2>
+            <h2 className="text-2xl font-semibold m-4">Detalhes das Visitas</h2>
             {visitsData.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {visitsData.map((visita, index) => (
@@ -78,4 +80,4 @@ function VisitsPage() {
     );
 }
 
-export default VisitsPage;
+export default withSessionHOC(VisitsPage);

@@ -5,6 +5,7 @@ import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/pt-br';
 import { AppointmentDetailsModal } from './appointmentDetailsModel';
+import { api } from '@/service/api';
 
 moment.locale('pt-br');
 const localizer = momentLocalizer(moment);
@@ -16,7 +17,7 @@ const App = () => {
   const [selectedSeller, setSelectedSeller] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/v1/agenda/')
+    api.get('http://localhost:8000/api/v1/agenda/')
       .then(response => {
         const appointments = response.data.map(appointment => ({
           ...appointment,

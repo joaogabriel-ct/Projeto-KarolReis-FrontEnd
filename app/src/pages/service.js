@@ -4,8 +4,9 @@ import axios from 'axios';
 import ProcedureTable from '@/components/tables/procedureTable';
 import ProcedureForm from '@/components/newProcedure';
 import GraficoProcedimentosMaisVendidos from '@/components/totalProcedure';
+import { withSessionHOC } from '@/service/auth/session';
 
-export default function Services() {
+function Services() {
     const [data, setData] = useState([]);
 
     useEffect(() => {
@@ -36,3 +37,5 @@ export default function Services() {
         </div>
     );
 }
+
+export default withSessionHOC(Services);
