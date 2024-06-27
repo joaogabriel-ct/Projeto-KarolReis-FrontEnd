@@ -13,9 +13,7 @@ function Financeiro() {
     const [data, setData] = useState([])
 
     useEffect(() => {
-        api.get('http://127.0.0.1:8000/api/v1/sales/',{
-
-        })
+        api.get('sales/')
             .then(response => {
                 setData(response.data);
             })

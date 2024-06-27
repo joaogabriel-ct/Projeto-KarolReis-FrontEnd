@@ -4,37 +4,54 @@ import { Formik, Form, Field } from 'formik';
 import InputMask from 'react-input-mask';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
+import { api } from '@/service/api';
 
-// Suposição de busca de procedimentos
 const fetchProcedures = async () => {
     try {
-        const response = await fetch('http://localhost:8000/api/v1/procedure/');
-        if (!response.ok) throw new Error('Falha ao buscar procedimentos');
-        return await response.json();
+        const response = await api.get('procedure/');
+        if (response.status !== 200) {
+            throw new Error(`Falha ao buscar procedimentos: ${response.statusText}`);
+        }
+        return response.data;
     } catch (error) {
         console.error("Erro ao buscar procedimentos:", error);
         return [];
     }
 };
 
-// Suposição de busca de cliente por CPF
+const getSellers = async () =>{
+    try{
+        const response = await api.get('seller/');
+        if (response.status !== 200) {
+            throw new Error(`Falha ao buscar procedimentos: ${response.statusText}`);
+        }
+        return response.data;
+    } catch (error){
+        alert('Error ao buscar nome das meninas.');
+        return [];
+    }
+}
+
 const fetchClientePorCpf = async (cpf) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/v1/lead/?cpf=${cpf}`);
-        if (!response.ok) throw new Error('Falha ao buscar cliente por CPF');
-        const data = await response.json();
-        return data.length > 0 ? data[0] : null;
+        const response = await api.get(`lead/?cpf=${cpf}`);
+        if (response.status !== 200) {
+            throw new Error(`Falha ao buscar cliente por CPF: ${response.statusText}`);
+        }
+        return response.data.length > 0 ? response.data[0] : null;
     } catch (error) {
-        console.error("Erro ao buscar cliente:", error);
+        console.error("Erro ao buscar cliente por CPF:", error);
         return null;
     }
 };
+
 
 // Validação do formulário com Yup
 const AppointmentSchema = Yup.object().shape({
     name: Yup.string().required('Nome é obrigatório'),
     cpf: Yup.string().required('CPF é obrigatório').matches(/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/, 'CPF não é válido'),
     procedureId: Yup.string().required('Procedimento é obrigatório'),
+    selleId: Yup.string().required('A escolha de quem vai atender é obrigatório.'),
     date: Yup.date().required('Data é obrigatória').nullable(),
     time: Yup.string().required('Hora é obrigatória'),
     instagram: Yup.string().optional(),
@@ -44,29 +61,43 @@ const AppointmentSchema = Yup.object().shape({
 const NewAppointment = ({ open, setOpen }) => {
     const [procedures, setProcedures] = useState([]);
     const [openNewLeadDialog, setOpenNewLeadDialog] = useState(false);
-    const [cpfNotFound, setCpfNotFound] = useState(''); // Adiciona este estado
+    const [cpfNotFound, setCpfNotFound] = useState('');
+    const [seller, setSeller] = useState([]);
 
     useEffect(() => {
         const loadProcedures = async () => {
             const data = await fetchProcedures();
             setProcedures(data);
         };
-        if (open) loadProcedures();
+        const loadSeller = async () => {
+            const data = await getSellers();
+            setSeller(data)
+        }
+        if (open) {
+            loadProcedures();
+            loadSeller();
+        }
     }, [open]);
 
     const handleClose = () => setOpen(false);
 
     const handleCpfBlur = async (event, setFieldValue, setSubmitting) => {
-        const cpf = event.target.value.replace(/\D/g, ''); // Remove a formatação do CPF
-        const cliente = await fetchClientePorCpf(cpf);
-        if (cliente) {
-            setFieldValue('name', cliente.name);
-            setFieldValue('instagram', cliente.instagram);
-            setFieldValue('telefoneCelular', cliente.phone_number);
-        } else {
-            setCpfNotFound(cpf); // Armazena o CPF não encontrado
-            setOpenNewLeadDialog(true); // Abre o dialog de novo lead
+        const cpf = event.target.value.replace(/\D/g, ''); // Remove caracteres não numéricos
+        setSubmitting(true); // Inicia o indicador de submissão
+        try {
+            const cliente = await fetchClientePorCpf(cpf);
+            if (cliente) {
+                setFieldValue('name', cliente.name);
+                setFieldValue('instagram', cliente.instagram);
+                setFieldValue('telefoneCelular', cliente.phone_number);
+            } else {
+                setCpfNotFound(cpf);
+                setOpenNewLeadDialog(true);
+            }
+        } catch (error) {
+            console.error('Erro ao processar CPF:', error);
         }
+        setSubmitting(false); // Sempre finaliza o indicador de submissão
     };
 
     return (
@@ -78,6 +109,7 @@ const NewAppointment = ({ open, setOpen }) => {
                         name: '',
                         cpf: '',
                         procedureId: '',
+                        sellerId: '',
                         date: '',
                         time: '',
                         instagram: '',
@@ -85,7 +117,9 @@ const NewAppointment = ({ open, setOpen }) => {
                     }}
                     validationSchema={AppointmentSchema}
                     onSubmit={async (values, { setSubmitting }) => {
-                        const leadData = await fetchClientePorCpf(values.cpf.replace(/\D/g, ''));
+                        setSubmitting(true);
+                        const cpfClean = values.cpf.replace(/\D/g, '');
+                        const leadData = await fetchClientePorCpf(cpfClean);
                         if (!leadData) {
                             Swal.fire('Erro', 'Cliente não encontrado e/ou não foi possível criar um novo.', 'error');
                             setSubmitting(false);
@@ -93,33 +127,26 @@ const NewAppointment = ({ open, setOpen }) => {
                         }
                         const payload = {
                             lead_id: leadData.id,
-                            seller_id: 1,
+                            seller_id: values.sellerId,
                             procedure_id: values.procedureId,
                             date: values.date,
                             time: values.time,
                         };
+                    
                         try {
-                            const response = await fetch('http://localhost:8000/api/v1/agenda/', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(payload),
-                            });
-
-                            if (!response.ok) {
-                                throw new Error('Falha ao criar agendamento');
+                            const response = await api.post('agenda/', payload);
+                            if (response.status !== 201 && response.status !== 200) { 
+                                throw new Error(`Falha ao criar agendamento: ${response.data.message || ''}`);
                             }
-
-                            await response.json();
-                            Swal.fire('Sucesso!', 'Agendamento criado com sucesso!', 'success').then(() => handleClose());
+                            Swal.fire('Sucesso!', 'Agendamento criado com sucesso!', 'success').then(handleClose);
                         } catch (error) {
                             console.error('Erro ao salvar agendamento:', error);
                             Swal.fire('Erro!', 'Não foi possível criar o agendamento.', 'error');
+                        } finally {
+                            setSubmitting(false);
                         }
-
-                        setSubmitting(false);
                     }}
+                    
                 >
                     {({ errors, touched, isSubmitting, setFieldValue }) => (
                         <Form>
@@ -165,6 +192,23 @@ const NewAppointment = ({ open, setOpen }) => {
                                     {procedures.map(option => (
                                         <MenuItem key={option.id} value={option.id}>
                                             {option.name}
+                                        </MenuItem>
+                                    ))}
+                                </Field>
+                                <Field as={TextField}
+                                    select
+                                    name="sellerId"
+                                    label="Quem vai atender ?"
+                                    fullWidth
+                                    margin="normal"
+                                    variant="outlined"
+                                    onChange={event => setFieldValue("sellerId", event.target.value)}
+                                    error={touched.sellerId && !!errors.sellerId}
+                                    helperText={touched.sellerId && errors.sellerId}
+                                >
+                                    {seller.map(option => (
+                                        <MenuItem key={option.id} value={option.id}>
+                                            {option.name_complete}
                                         </MenuItem>
                                     ))}
                                 </Field>
@@ -279,21 +323,11 @@ const NewLeadDialog = ({ open, onClose, initialCpf }) => {
         };
 
         try {
-            const response = await fetch('http://localhost:8000/api/v1/lead/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(leadData),
-            });
-
+            const response = api.post('lead/',leadData)
             if (!response.ok) {
                 throw new Error('Falha ao enviar os dados do lead');
             }
-
             const responseData = await response.json();
-            console.log('Lead salvo com sucesso:', responseData);
-
             // Limpar formulário e fechar diálogo após sucesso
             setFormValues({
                 cpf: '',

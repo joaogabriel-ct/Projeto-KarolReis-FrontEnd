@@ -17,7 +17,7 @@ const App = () => {
   const [selectedSeller, setSelectedSeller] = useState(null);
 
   useEffect(() => {
-    api.get('http://localhost:8000/api/v1/agenda/')
+    api.get('agenda/')
       .then(response => {
         const appointments = response.data.map(appointment => ({
           ...appointment,

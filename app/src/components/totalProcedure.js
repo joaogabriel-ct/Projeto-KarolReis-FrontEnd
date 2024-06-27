@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import DadosGraficoProcedimentos from './charts/chartsProcedure';
+import { api } from '@/service/api';
 
 
 const GraficoProcedimentosMaisVendidos = () => {
     const [dados, setDados] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/v1/dados-procedimentos/')
+        api.get('dados-procedimentos/')
             .then(response => {
                 setDados(response.data.map(item => ({ nome: item.procedure_id__name, vendas: item.total_vendas })));
             })

@@ -15,7 +15,7 @@ export function getAPIClient(ctx = null) {
   let token = getAccessToken(ctx);
 
   const api = axios.create({
-    baseURL: 'http://localhost:8000/api/v1/' 
+    baseURL: 'http://127.0.0.1:8000/api/v1/' 
   })
 
   if (token) {
@@ -31,7 +31,7 @@ export function getAPIClient(ctx = null) {
       error.config.__isRetryRequest = true;
       try {
         const refreshToken = ctx ? parseCookies(ctx)['refreshToken'] : localStorage.getItem('refreshToken');
-        const response = await axios.post(`http://localhost:8000/api/v1/token/refresh/`, { token: refreshToken });
+        const response = await axios.post(`http://127.0.0.1:8000/api/v1/token/refresh/`, { token: refreshToken });
         const { token: newToken } = response.data;
         if (ctx) {
           setCookie(ctx, 'token', newToken, { path: '/' });

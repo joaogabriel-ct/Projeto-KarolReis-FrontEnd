@@ -13,9 +13,7 @@ function VisitsPage() {
     const [error, setError] = useState(null);
     const { id } = router.query;
     useEffect(() => {
-
         if (id) {
-
             api.get(`http://localhost:8000/api/v1/visitas-total/${id}/`)
                 .then((response) => {
                     if (response.data.detalhes_visitas.length > 0) {

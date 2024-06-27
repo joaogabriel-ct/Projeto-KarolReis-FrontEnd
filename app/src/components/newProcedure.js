@@ -5,6 +5,7 @@ import InputMask from 'react-input-mask';
 import axios from 'axios';
 import * as Yup from 'yup';
 import { CampoMoeda } from './campoMoeda';
+import { api } from '@/service/api';
 
 const schema = Yup.object().shape({
     name: Yup.string().required('O nome do procedimento é obrigatório'),
@@ -22,7 +23,7 @@ export default function ProcedureForm() {
     const onSubmit = data => {
         console.log(data);
         // Substitua a URL pela sua API endpoint para cadastro de procedimentos
-        axios.post('http://localhost:8000/api/v1/procedure/', data)
+        api.post('procedure/', data)
             .then(response => {
                 // Trate a resposta como achar necessário
                 alert('Procedimento cadastrado com sucesso!');
