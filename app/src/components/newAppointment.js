@@ -4,7 +4,7 @@ import { Formik, Form, Field } from 'formik';
 import InputMask from 'react-input-mask';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
-import { api } from '@/service/api';
+
 
 const fetchProcedures = async () => {
     try {

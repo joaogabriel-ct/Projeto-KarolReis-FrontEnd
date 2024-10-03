@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",  // Isso define a base do caminho relativo
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["src/*"]  // Mapeia o alias `@/` para a pasta `src`
     }
-  }
+  },
+  "include": ["src"]
 }

@@ -33,22 +33,22 @@ export default function Table({ data }) {
                     {data && data.length > 0 && data.map((item) => (
                         <tr key={item.id} className="border-b dark:border-gray-700 odd:bg-white odd:dark:bg-gray-50 even:bg-gray-50 even:dark:bg-gray-300">
                             <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-grey-600">
-                                <a href={`venda/${item.LEAD.id}`}>
-                                    {item.LEAD ? item.LEAD.name : 'Sem nome'}
+                                <a href={`venda/${item.lead.id}`}>
+                                    {item.lead ? item.lead.name : 'Sem nome'}
                                 </a>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                <a href={`venda/${item.LEAD.id}`}>
-                                    {item.PROCEDURE.name}
+                                <a href={`venda/${item.lead.id}`}>
+                                    {item.procedure.name}
                                 </a>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                <a href={`venda/${item.LEAD.id}`}>
-                                    R$ {item.PROCEDURE.value.toFixed(2)}
+                                <a href={`venda/${item.lead.id}`}>
+                                    R$ {item.procedure?.value ? parseFloat(item.procedure.value).toFixed(2) : '0.00'}
                                 </a>
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap dark:text-grey-600">
-                                <a href={`venda/${item.LEAD.id}`}>
+                                <a href={`venda/${item.lead.id}`}>
                                     {formatDate(item.date)}
                                 </a>
                             </td>

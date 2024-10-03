@@ -1,6 +1,7 @@
 import App from '@/components/calendar';
+import { Container } from '@/components/container';
 import NewAppointment from '@/components/newAppointment';
-import { withSessionHOC } from '@/service/auth/session';
+
 import { useState } from 'react';
 
 
@@ -10,11 +11,11 @@ function Home() {
   const handleOpenDialog = () => {
     setOpenDialog(true);
   };
-    return (
-    <div className="flex justify-center items-center">
-        <App />
-    </div>
+  return (
+    <Container>
+      <App />
+    </Container>
   );
 }
 
-export default withSessionHOC(Home);
+export default Home;

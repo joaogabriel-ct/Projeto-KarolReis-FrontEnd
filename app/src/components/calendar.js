@@ -1,99 +1,146 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useSession } from "next-auth/react";
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction'; // Mantém o plugin para interação com os eventos
 import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
 import 'moment/locale/pt-br';
 import { AppointmentDetailsModal } from './appointmentDetailsModel';
-import { api } from '@/service/api';
+import { getAPIClient } from "@/pages/api/axios";
 
 moment.locale('pt-br');
-const localizer = momentLocalizer(moment);
 
 const App = () => {
-  const [allEvents, setAllEvents] = useState([]); // Lista de todos os eventos não filtrados
-  const [filteredEvents, setFilteredEvents] = useState([]); // Lista de eventos filtrados
+  const { data: session } = useSession();  // Usando o hook para pegar a sessão
+  const [allEvents, setAllEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [selectedSeller, setSelectedSeller] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);  // Estado para armazenar se o usuário é admin
 
+  // Função para buscar eventos da API
   useEffect(() => {
-    api.get('agenda/')
-      .then(response => {
-        const appointments = response.data.map(appointment => ({
-          ...appointment,
-          start: new Date(appointment.date + 'T' + appointment.time),
-          end: new Date(appointment.date + 'T' + appointment.time),
-          title: `${appointment.PROCEDURE.name} - ${appointment.LEAD.name}`,
-          seller: appointment.SELLER.name_complete
-        }));
-        setAllEvents(appointments);
-        setFilteredEvents(appointments); // Define os eventos filtrados inicialmente como todos os eventos
-      })
-      .catch(error => {
-        console.error('Erro ao buscar agendamentos:', error);
-      });
-  }, []);
+    const fetchData = async () => {
+      setLoading(true);
+      const api = await getAPIClient();
+      api.get('agenda/')
+        .then(response => {
+          const appointments = response.data.map(appointment => ({
+            id: appointment.id,
+            title: appointment.titulo,
+            start: new Date(appointment.data_init),
+            end: new Date(appointment.data_end),
+            seller: appointment.seller_id,
+            LEAD: appointment.LEAD,
+            SELLER: appointment.SELLER,
+            procedures: appointment.procedures || [],
+            backgroundColor: getEventColor(appointment.seller_id)
+          }));
+          setAllEvents(appointments);
+          setFilteredEvents(appointments);
+        })
+        .catch(error => {
+          console.error('Erro ao buscar agendamentos:', error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
 
+    // Verifica se o usuário é admin a partir da sessão
+    const checkAdminStatus = () => {
+      if (session && session.user) {
+        const adminStatus = session.user.isAdmin; // Supondo que "isAdmin" esteja dentro de session.user
+        setIsAdmin(adminStatus);
+      }
+    };
+
+    fetchData();
+    checkAdminStatus();  // Chama a função para verificar se o usuário é admin
+  }, [session]);  // Rodar o useEffect novamente se a sessão mudar
+
+  // Função para definir a cor do evento com base no vendedor
+  const getEventColor = (seller) => {
+    switch (seller) {
+      case 'Joao Gabriel':
+        return '#ff0000'; // Vermelho
+      case 'Karol Reis':
+        return '#00ff00'; // Verde
+      default:
+        return '#0000ff'; // Azul
+    }
+  };
+
+  // Filtrar eventos com base no vendedor selecionado
   useEffect(() => {
-    // Filtra os eventos com base no vendedor selecionado
-    const filteredEvents = allEvents.filter(event => !selectedSeller || event.seller === selectedSeller);
-    setFilteredEvents(filteredEvents);
+    const filtered = allEvents.filter(event => !selectedSeller || event.seller === selectedSeller);
+    setFilteredEvents(filtered);
   }, [selectedSeller, allEvents]);
 
-  const handleEventClick = (event) => {
-    setSelectedAppointment(event);
-  };
-
-  const eventStyleGetter = (event, start, end, isSelected) => {
-    let backgroundColor = '';
-    switch (event.seller) {
-      case 'Joao Gabriel':
-        backgroundColor = '#ff0000';
-        break;
-      case 'Karol':
-        backgroundColor = '#00ff00';
-        break;
-      default:
-        backgroundColor = '#0000ff';
-        break;
-    }
-    return {
-      style: {
-        backgroundColor,
-      },
+  // Função para lidar com o clique no evento
+  const handleEventClick = (clickInfo) => {
+    const appointment = {
+      id: clickInfo.event.id,
+      title: clickInfo.event.title,
+      start: clickInfo.event.start,
+      end: clickInfo.event.end,
+      seller: clickInfo.event.extendedProps.seller,
+      procedures: clickInfo.event.extendedProps.procedures || [],
+      LEAD: clickInfo.event.extendedProps.LEAD || {},
+      SELLER: clickInfo.event.extendedProps.SELLER || {},
     };
+    setSelectedAppointment(appointment);
   };
 
-  const handleChange = (e) => {
+  // Handler para troca de vendedor
+  const handleSellerChange = (e) => {
     setSelectedSeller(e.target.value);
   };
 
   return (
     <div className="flex flex-col h-screen justify-center items-center">
-      <select className="m-4 p-2 w-full" onChange={handleChange}>
+      {isAdmin && (
+        <>
+      <select className="m-4 p-2 w-full" onChange={handleSellerChange}>
         <option value="">Todos os vendedores</option>
         <option value="Joao Gabriel">Joao Gabriel</option>
-        <option value="Karol">Karol</option>
+        <option value="Karol Reis">Karol Reis</option>
       </select>
+      </>
+      )}
 
-      <div className="flex-grow max-h-80vh overflow-y-auto">
-        <Calendar
-          className='mt-4 p-4 bg-white'
-          localizer={localizer}
-          events={filteredEvents}
-          messages={{next: "Próximo", previous: "Anterior", today: "Hoje", month:"Mês", week:"Semana", day: "Dia", date:'Data', time: "Tempo", event:"Evento"}}
-          startAccessor="start"
-          endAccessor="end"
-          onSelectEvent={handleEventClick}
-          eventPropGetter={eventStyleGetter}
-          style={{ flexGrow: 1 }}
-        />
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <p>Carregando eventos...</p>
+        </div>
+      ) : (
+        <div className="flex-grow max-h-80vh overflow-y-auto w-full">
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}  // Mantém apenas os plugins necessários
+            initialView="dayGridMonth"  // Definindo a visualização inicial como 'Mês'
+            locale="pt-br"
+            events={filteredEvents}
+            eventClick={handleEventClick}
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: ''  // Remove outras opções de visualização
+            }}
+            buttonText={{
+              today: 'Hoje',
+              month: 'Mês',
+            }}
+            height="auto"
+          />
+        </div>
+      )}
 
       {selectedAppointment && (
         <AppointmentDetailsModal
           appointment={selectedAppointment}
           onClose={() => setSelectedAppointment(null)}
+          isAdmin={isAdmin}  // Passa o estado de admin para o modal
         />
       )}
     </div>

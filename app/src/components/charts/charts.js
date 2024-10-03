@@ -25,7 +25,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 export default function Charts({ salesData }) {
   const dataArray = Array.isArray(salesData) ? salesData : [salesData];
-  const formattedSalesData = dataArray.map(item => createData(item.date, item.PROCEDURE.value));
+  const formattedSalesData = dataArray.map(item => createData(item.date, item.procedure.value));
 
   return (
     <div style={{ width: '100%', height: '300px' }}>

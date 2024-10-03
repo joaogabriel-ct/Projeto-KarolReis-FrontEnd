@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 
-body{
+html, body, #__next {
     background-color: #FFE3E0;
     color:black;
+    height: 100%;
+    margin: 0;
 }

@@ -22,8 +22,9 @@ export default function ProcedureTable({ data }) {
                                 {procedure.name}
                             </td>
                             <td className="py-2">
-                                R$ {procedure.value.toFixed(2)}
+                                R$ {procedure.value ? Number(procedure.value).toFixed(2) : 'N/A'}
                             </td>
+
                             <td className="px-4 py-2 max-w-[300px] truncate">
                                 {procedure.observation || 'N/A'}
                             </td>
