@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Image from 'next/image';
 import Swal from 'sweetalert2';
 import { Container } from '@/components/container';
+import Link from 'next/link';
 
 const schema = yup.object().shape({
   username: yup.string().required('Login não pode estar vazio.'),
@@ -41,7 +42,7 @@ export default function Login() {
       // Após o login bem-sucedido, espere a sessão ser carregada
       if (session) {
         const isAdmin = session.user?.isAdmin;
-        
+
         // Redireciona com base no tipo de usuário
         if (isAdmin) {
           router.replace('/admin/financeiro'); // Redireciona admin
@@ -106,7 +107,9 @@ export default function Login() {
                 </button>
               </form>
               <div className="mt-4 text-center">
-                <a href="/register" className="text-blue-500 hover:underline">Ainda sem conta? Clique aqui.</a>
+                <Link href="/register"
+                    className="text-blue-500 hover:underline">Ainda sem conta? Clique aqui
+                </Link>
               </div>
             </div>
           </div>

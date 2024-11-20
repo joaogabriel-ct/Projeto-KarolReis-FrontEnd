@@ -16,7 +16,7 @@ function VisitsPage() {
         const fetchData = async () => {
             const api = await getAPIClient();
             if (id) {
-                api.get(`http://localhost:8000/api/v1/visitas-total/${id}/`)
+                api.get(`visitas-total/${id}/`)
                     .then((response) => {
                         if (response.data.detalhes_visitas.length > 0) {
                             // Assume que todos os registros possuem os mesmos dados do cliente

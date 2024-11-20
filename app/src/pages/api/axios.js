@@ -14,7 +14,7 @@ export async function getAPIClient(ctx = null) {
   }
 
   const api = axios.create({
-    baseURL: 'http://127.0.0.1:8000/api/v1/',
+    baseURL: 'https://karolreis.online/backend/v1/',
   });
 
   if (token) {
@@ -37,7 +37,7 @@ export async function getAPIClient(ctx = null) {
           const session = await getSession(ctx);
           const refreshToken = session?.refreshToken;
 
-          const response = await axios.post('http://127.0.0.1:8000/api/v1/token/refresh/', { token: refreshToken });
+          const response = await axios.post('https://karolreis.online/backend/v1/token/refresh/', { token: refreshToken });
           const { token: newToken } = response.data;
 
           api.defaults.headers['Authorization'] = `Bearer ${newToken}`;

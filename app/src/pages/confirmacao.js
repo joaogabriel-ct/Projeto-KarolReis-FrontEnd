@@ -17,7 +17,7 @@ export default function ConfirmAppointment() {
     if (status === "unauthenticated") {
       router.push('/login');
     }
-  }, [status]);
+  }, [status, router]);
 
   const handleConfirm = async () => {
     const api = await getAPIClient();

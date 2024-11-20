@@ -13,7 +13,7 @@ function Services() {
     // Função para buscar os dados da API
     const fetchData = async () => {
         const api = await getAPIClient();
-        axios.get('http://localhost:8000/api/v1/procedure/')
+        api.get('procedure/')
             .then(response => {
                 setData(response.data);
             })

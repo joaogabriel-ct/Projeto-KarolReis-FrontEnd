@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Box } from '@mui/material';
 import { Home, MonetizationOn, Settings, EventNote, Menu } from '@mui/icons-material';
-import { useSession } from 'next-auth/react'; // Importa o hook do next-auth para verificar sessão
-import LogoutButton from '@/components/singout'; // Importando o botão de logout
+import { useSession } from 'next-auth/react';
+import LogoutButton from '@/components/singout';
+import Image from 'next/image'
+
 
 const drawerWidth = 240; // Define a largura do Drawer
 
@@ -18,9 +20,16 @@ const Sidebar = ({ children }) => {
 
     const drawer = (
         <div>
-            <div className="p-4 flex items-center justify-between">
-                <img className='w-50 h-20 mx-auto' src="/logo.jpg" alt="Logo" />
+            <div className="w-50 h-20 mx-auto">
+                <Image 
+                    src="/logo.jpg" 
+                    alt="Logo" 
+                    width={200} 
+                    height={80} 
+                    priority 
+                />
             </div>
+            <div className="pt-20">
             <List>
                 <ListItem button component="a" href="/home">
                     <ListItemIcon>
@@ -54,6 +63,7 @@ const Sidebar = ({ children }) => {
                     <LogoutButton />
                 </ListItem>
             </List>
+            </div>
         </div>
     );
 

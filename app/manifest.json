@@ -1,0 +1,57 @@
+{
+    "name": "Karol Reis design",
+    "short_name": "Agendamento",
+    "description": "Um sistema web para realizar agendamento de atendimentos",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFE3E0",
+    "theme_color": "#FFE3E0",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "iconLogo.png",
+        "sizes": "72x72",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "96x96",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "128x128",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "144x144",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "152x152",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "384x384",
+        "type": "image/png"
+      },
+      {
+        "src": "iconLogo.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ],
+    "permissions": [
+      "notifications"
+    ],
+    "lang": "pt-BR"
+  }
+  

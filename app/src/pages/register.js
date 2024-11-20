@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Link from 'next/link';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -44,7 +45,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:8000/api/v1/lead/', formData);
+      const response = await axios.post('lead/', formData);
       Swal.fire('Sucesso!', 'Lead cadastrado com sucesso!', 'success');
       setFormData({
         user: {
@@ -195,7 +196,9 @@ export default function Register() {
             {loading ? 'Cadastrando...' : 'Registrar'}
           </button>
           <div className="mt-4 text-center">
-            <a href="/login" className="text-blue-500 hover:underline">Voltar a tela de login.</a>
+            <Link href="/login"
+             className="text-blue-500 hover:underline">Voltar a tela de login.
+            </Link>
           </div>
         </form>
       </div>
