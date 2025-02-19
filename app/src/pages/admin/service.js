@@ -13,7 +13,7 @@ function Services() {
     // Função para buscar os dados da API
     const fetchData = async () => {
         const api = await getAPIClient();
-        api.get('procedure/')
+        api.get('operation/procedure/')
             .then(response => {
                 setData(response.data);
             })

@@ -9,7 +9,7 @@ export default NextAuth({
       async authorize(credentials) {
         try {
           // Faz a solicitação para autenticação no backend
-          const res = await axios.post('https://karolreis.online/backend/v1/login/', {
+          const res = await axios.post('http://localhost:8000/backend/v1/auth/login/', {
             username: credentials.username,
             password: credentials.password,
           });
@@ -45,7 +45,7 @@ export default NextAuth({
     }),
   ],
   pages: {
-    signIn: '/financeiro',
+    signIn: '/home',
   },
   callbacks: {
     async jwt({ token, user }) {

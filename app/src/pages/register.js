@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
+import { getAPIClient } from "@/pages/api/axios";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -10,13 +10,9 @@ export default function Register() {
       email: '',
       password: '',
     },
-    cpf: '',
     name: '',
     phone_number: '',
-    instagram: '',
     birthday: '',
-    doenca: '',
-    adress: '',
   });
 
   const [loading, setLoading] = useState(false);
@@ -45,19 +41,23 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post('lead/', formData);
+      // Utiliza a abstração de API configurada (getAPIClient)
+      const api = await getAPIClient();
+      const response = await api.post('people/lead/', formData);
       Swal.fire('Sucesso!', 'Lead cadastrado com sucesso!', 'success');
+
+      // Limpa o formulário (ajuste os campos conforme necessário)
       setFormData({
         user: {
           username: '',
           email: '',
           password: '',
         },
-        cpf: '',
         name: '',
         phone_number: '',
-        instagram: '',
         birthday: '',
+        cpf: '',
+        instagram: '',
         doenca: '',
         adress: '',
       });
@@ -72,10 +72,9 @@ export default function Register() {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-full max-w-lg bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold text-center mb-6">Registro de Lead</h2>
+        <h2 className="text-2xl font-semibold text-center mb-6">Registro da cliente</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Campos do Usuário */}
-          <h3 className="text-xl font-medium">Informações do Usuário</h3>
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700">Nome de Usuário</label>
             <input
@@ -111,18 +110,6 @@ export default function Register() {
           </div>
 
           {/* Campos do Lead */}
-          <h3 className="text-xl font-medium">Informações do Lead</h3>
-          <div>
-            <label htmlFor="cpf" className="block text-sm font-medium text-gray-700">CPF</label>
-            <input
-              type="text"
-              name="cpf"
-              value={formData.cpf}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">Nome Completo</label>
             <input
@@ -146,42 +133,11 @@ export default function Register() {
             />
           </div>
           <div>
-            <label htmlFor="instagram" className="block text-sm font-medium text-gray-700">Instagram</label>
-            <input
-              type="text"
-              name="instagram"
-              value={formData.instagram}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <div>
             <label htmlFor="birthday" className="block text-sm font-medium text-gray-700">Data de Nascimento</label>
             <input
               type="date"
               name="birthday"
               value={formData.birthday}
-              onChange={handleChange}
-              required
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <div>
-            <label htmlFor="doenca" className="block text-sm font-medium text-gray-700">Doenças</label>
-            <input
-              type="text"
-              name="doenca"
-              value={formData.doenca}
-              onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-lg"
-            />
-          </div>
-          <div>
-            <label htmlFor="adress" className="block text-sm font-medium text-gray-700">Endereço</label>
-            <input
-              type="text"
-              name="adress"
-              value={formData.adress}
               onChange={handleChange}
               required
               className="w-full p-2 border border-gray-300 rounded-lg"
@@ -196,8 +152,8 @@ export default function Register() {
             {loading ? 'Cadastrando...' : 'Registrar'}
           </button>
           <div className="mt-4 text-center">
-            <Link href="/login"
-             className="text-blue-500 hover:underline">Voltar a tela de login.
+            <Link href="/login" className="text-blue-500 hover:underline">
+              Voltar a tela de login.
             </Link>
           </div>
         </form>

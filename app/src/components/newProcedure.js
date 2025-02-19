@@ -19,7 +19,7 @@ export default function ProcedureForm() {
     const onSubmit = data => {
         const fetchData = async () => {
             const api = await getAPIClient();
-            api.post('procedure/', data)
+            api.post('operation/procedure/', data)
                 .then(response => {
                     alert('Procedimento cadastrado com sucesso!');
                 })

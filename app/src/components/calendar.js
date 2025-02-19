@@ -24,7 +24,7 @@ const App = () => {
     const fetchData = async () => {
       setLoading(true);
       const api = await getAPIClient();
-      api.get('agenda/')
+      api.get('sales/agenda/')
         .then(response => {
           const appointments = response.data.map(appointment => ({
             id: appointment.id,

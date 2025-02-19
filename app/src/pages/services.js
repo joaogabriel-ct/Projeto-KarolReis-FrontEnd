@@ -16,7 +16,7 @@ export default function SelectServices() {
             setLoading(true);
             const api = await getAPIClient();
             try {
-                const response = await api.get('/procedure/');
+                const response = await api.get('operation/procedure/');
                 setProcedures(response.data);
             } catch (error) {
                 console.error('Erro ao buscar procedimentos:', error);

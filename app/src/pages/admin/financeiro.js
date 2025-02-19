@@ -16,7 +16,7 @@ function Financeiro() {
         const fetchData = async () => {
             const api = await getAPIClient(); // Aguarde o retorno da instância API
 
-            api.get('sales/')
+            api.get('sales/sales/')
                 .then(response => {
                     setData(response.data);
                 })
