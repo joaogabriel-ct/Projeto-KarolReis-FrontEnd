@@ -28,27 +28,28 @@ export default function Login() {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+      console.log('Tentando login com:', data.username);
 
       const result = await signIn('credentials', {
         username: data.username,
         password: data.password,
-        redirect: false, // Não redireciona automaticamente
+        redirect: false,
       });
 
+      console.log('Resultado do login:', result);
+
       if (result?.error) {
+        console.error('Erro no login:', result.error);
         throw new Error(result.error);
       }
 
-      // Após o login bem-sucedido, espere a sessão ser carregada
-      if (session) {
-        const isAdmin = session.user?.isAdmin;
-
-        // Redireciona com base no tipo de usuário
-        if (isAdmin) {
-          router.replace('/admin/financeiro'); // Redireciona admin
-        } else {
-          router.replace('/home'); // Redireciona não-admin
-        }
+      // Após o login bem-sucedido, redireciona imediatamente
+      if (result?.ok) {
+        console.log('Login bem-sucedido, redirecionando...');
+        // Aguarda um momento para a sessão ser atualizada
+        setTimeout(() => {
+          router.replace('/home');
+        }, 1000);
       }
 
     } catch (error) {
@@ -79,21 +80,21 @@ export default function Login() {
               <h2 className="text-3xl text-center font-bold">Login</h2>
               <form onSubmit={handleSubmit(onSubmit)} noValidate>
                 <div className="mb-4">
-                  <label htmlFor="username" className="block text-gray-600 font-semibold">Nome de usuário</label>
+                  <label htmlFor="username" className="block text-gray-700 font-semibold">Nome de usuário</label>
                   <input
                     type="text"
                     id="username"
-                    className={`mt-1 px-3 py-2 w-full rounded-lg border ${errors.username ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring focus:border-blue-400`}
+                    className={`mt-1 px-3 py-2 w-full rounded-lg border text-gray-900 placeholder-gray-500 ${errors.username ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring focus:border-blue-400`}
                     {...register('username')}
                   />
                   {errors.username && <p className="mt-1 text-red-500 text-sm">{errors.username.message}</p>}
                 </div>
                 <div className="mb-4">
-                  <label htmlFor="password" className="block text-gray-600 font-semibold">Senha</label>
+                  <label htmlFor="password" className="block text-gray-700 font-semibold">Senha</label>
                   <input
                     type="password"
                     id="password"
-                    className={`mt-1 px-3 py-2 w-full rounded-lg border ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring focus:border-blue-400`}
+                    className={`mt-1 px-3 py-2 w-full rounded-lg border text-gray-900 placeholder-gray-500 ${errors.password ? 'border-red-500' : 'border-gray-300'} focus:outline-none focus:ring focus:border-blue-400`}
                     {...register('password')}
                   />
                   {errors.password && <p className="mt-1 text-red-500 text-sm">{errors.password.message}</p>}

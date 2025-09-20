@@ -73,7 +73,7 @@ export default function AgendamentoForm({ initialValues, onSubmit }) {
             <Field
               name="seller_id"
               as="select"
-              className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight"
+              className="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight text-gray-900"
               onChange={(e) => setFieldValue('seller_id', parseInt(e.target.value, 10))}
             >
               <option value="">Selecione</option>
@@ -94,7 +94,7 @@ export default function AgendamentoForm({ initialValues, onSubmit }) {
             <DatePicker
               selected={values.data_init ? new Date(values.data_init) : null}
               onChange={(date) => setFieldValue('data_init', formatToISOString(date))}
-              className="block w-full bg-white border border-gray-300 rounded py-2 px-3 shadow leading-tight"
+              className="block w-full bg-white border border-gray-300 rounded py-2 px-3 shadow leading-tight text-gray-900"
               dateFormat="dd/MM/yyyy"
               placeholderText="Selecione uma data"
               minDate={new Date()}

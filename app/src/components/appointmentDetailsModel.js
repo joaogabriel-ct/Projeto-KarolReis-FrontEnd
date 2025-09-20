@@ -24,12 +24,12 @@ export const AppointmentDetailsModal = ({ appointment, onClose }) => {
     }
   };
 
-  // Função para remarcar o agendamento (redireciona para a página de remarcação)
-  const handleReschedule = () => {
+  // Função para ver detalhes do agendamento
+  const handleViewDetails = () => {
     if (appointment?.id) {
       router
-        .push(`/admin/reschedule/${appointment.id}`)
-        .then(() => console.log("Redirecionamento para remarcar agendamento"))
+        .push(`/agendamento/${appointment.id}`)
+        .then(() => console.log("Redirecionamento para detalhes do agendamento"))
         .catch((err) => console.error("Erro ao redirecionar:", err));
     } else {
       console.error("ID do agendamento não encontrado");
@@ -54,7 +54,7 @@ export const AppointmentDetailsModal = ({ appointment, onClose }) => {
       try {
         const api = await getAPIClient();
         // Chama o endpoint para cancelar o agendamento (ajuste a rota e o método conforme sua API)
-        await api.delete(`sales/agendamento/${appointment.id}`);
+        await api.delete(`agendamento/${appointment.id}`);
         Swal.fire("Cancelado!", "O agendamento foi cancelado.", "success");
         onClose();
       } catch (error) {
@@ -125,10 +125,10 @@ export const AppointmentDetailsModal = ({ appointment, onClose }) => {
               Fechar
             </button>
             <button
-              onClick={handleReschedule}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded"
+              onClick={handleViewDetails}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded"
             >
-              Remarcar
+              Ver Detalhes
             </button>
             <button
               onClick={handleCancelAppointment}

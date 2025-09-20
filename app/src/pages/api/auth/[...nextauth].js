@@ -9,7 +9,8 @@ export default NextAuth({
       async authorize(credentials) {
         try {
           // Faz a solicitação para autenticação no backend
-          const res = await axios.post('http://localhost:8000/backend/v1/auth/login/', {
+          const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/backend/v1';
+          const res = await axios.post(`${API_BASE_URL}/auth/login/`, {
             username: credentials.username,
             password: credentials.password,
           });
@@ -34,18 +35,33 @@ export default NextAuth({
           }
         } catch (error) {
           // Melhoria na tratativa de erros
-          if (error.response && error.response.status === 401) {
-            throw new Error('Credenciais inválidas. Verifique seu usuário e senha.');
+          console.error('Erro completo:', error);
+          
+          if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+            
+            if (error.response.status === 401) {
+              throw new Error('Credenciais inválidas. Verifique seu usuário e senha.');
+            } else if (error.response.status === 400) {
+              const errorMessage = error.response.data?.detail || error.response.data?.error || 'Dados inválidos';
+              throw new Error(errorMessage);
+            } else {
+              throw new Error(`Erro no servidor (${error.response.status}). Tente novamente mais tarde.`);
+            }
+          } else if (error.request) {
+            console.error('Request error:', error.request);
+            throw new Error('Não foi possível conectar ao servidor. Verifique se o backend está rodando.');
           } else {
-            console.error('Authorization error:', error.message);
-            throw new Error('Erro no servidor. Tente novamente mais tarde.');
+            console.error('Error message:', error.message);
+            throw new Error('Erro inesperado. Tente novamente mais tarde.');
           }
         }
       },
     }),
   ],
   pages: {
-    signIn: '/home',
+    signIn: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -70,6 +86,7 @@ export default NextAuth({
         lead_id: token.lead_id,
         name: token.name,
         email: token.email,
+        isAdmin: token.isAdmin, // Adicionar também no user object
       };
 
       return session;

@@ -1,25 +1,53 @@
+import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
 
-export async function middleware(req) {
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+export default withAuth(
+  function middleware(req) {
+    const { pathname } = req.nextUrl;
+    const token = req.nextauth.token;
 
-  if (!token) {
-    return NextResponse.redirect(new URL('/login', req.url));
+    // Se não há token, redirecionar para login
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', req.url));
+    }
+
+    const isAdmin = token.isAdmin;
+
+    // Redirecionamentos baseados no tipo de usuário
+    if (pathname === '/') {
+      // Se for admin e estiver na home, redirecionar para dashboard
+      if (isAdmin) {
+        return NextResponse.redirect(new URL('/home', req.url));
+      }
+      // Se não for admin, permanecer na home
+      return NextResponse.next();
+    }
+
+    if (pathname === '/home') {
+      // Se não for admin e tentar acessar dashboard, redirecionar para home
+      if (!isAdmin) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
+      // Se for admin, permitir acesso ao dashboard
+      return NextResponse.next();
+    }
+
+    // Para rotas admin, verificar se é admin
+    if (pathname.startsWith('/admin/')) {
+      if (!isAdmin) {
+        return NextResponse.redirect(new URL('/', req.url));
+      }
+    }
+
+    return NextResponse.next();
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token,
+    },
   }
-
-  // Verifica se é uma rota administrativa
-  const isAdminRoute = req.nextUrl.pathname.startsWith('/admin');
-
-  // Verifica se o usuário é admin
-  if (isAdminRoute && (!token || !token.isAdmin)) {
-    return NextResponse.redirect(new URL('/403', req.url));
-  }  
-
-  // Caso contrário, prossegue com a requisição
-  return NextResponse.next();
-}
+);
 
 export const config = {
-  matcher: ['/home', '/admin/:path*', '/agendamento'],  // Rotas protegidas
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|login).*)'],
 };

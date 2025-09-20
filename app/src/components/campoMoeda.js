@@ -21,7 +21,7 @@ export const CampoMoeda = React.forwardRef(({ onChange, onBlur, name, placeholde
             onChange={aoDigitado}
             onBlur={onBlur} 
             placeholder={placeholder}
-            className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            className="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 placeholder-gray-500"
             type="text"
         />
     );

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Checkbox, FormControlLabel, CircularProgress, Typography, Card, CardContent } from '@mui/material';
 import { useRouter } from 'next/router';
-import { getAPIClient } from "@/pages/api/axios";
+import { apiService } from "@/utils/apiService";
 import { Container } from '@/components/container';
 
 export default function SelectServices() {
@@ -14,10 +14,9 @@ export default function SelectServices() {
     useEffect(() => {
         const fetchProcedures = async () => {
             setLoading(true);
-            const api = await getAPIClient();
             try {
-                const response = await api.get('operation/procedure/');
-                setProcedures(response.data);
+                const response = await apiService.getProcedures();
+                setProcedures(response);
             } catch (error) {
                 console.error('Erro ao buscar procedimentos:', error);
             } finally {

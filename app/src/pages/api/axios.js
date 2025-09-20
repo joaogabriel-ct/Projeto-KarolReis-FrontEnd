@@ -14,7 +14,7 @@ export async function getAPIClient(ctx = null) {
   }
 
   const api = axios.create({
-    baseURL: 'http://localhost:8000/backend/v1/',
+    baseURL: 'http://localhost:8000/backend/v1',
   });
 
   if (token) {
@@ -37,8 +37,8 @@ export async function getAPIClient(ctx = null) {
           const session = await getSession(ctx);
           const refreshToken = session?.refreshToken;
 
-          const response = await axios.post('http://localhost:8000/backend/v1/token/refresh/', { token: refreshToken });
-          const { token: newToken } = response.data;
+          const response = await axios.post('http://localhost:8000/backend/v1/auth/token/refresh/', { refresh: refreshToken });
+          const { access: newToken } = response.data;
 
           api.defaults.headers['Authorization'] = `Bearer ${newToken}`;
           return api(error.config);
